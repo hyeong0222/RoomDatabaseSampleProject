@@ -1,30 +1,34 @@
 package com.example.roomdatabasesampleproject.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ListAdapter
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.roomdatabasesampleproject.R
 import com.example.roomdatabasesampleproject.model.User
 
-class UserAdapter() : ListAdapter<User, UserViewHolder>(diffUtil) {
+class UserAdapter : ListAdapter<User, UserViewHolder>(diffUtil) {
 
-    public override fun getItem(position: Int): User = super.getItem(position)
+    fun setTaskItems(list: List<User>) = submitList(list)
 
-    fun setUserItems(list: List<User>) = submit(list)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        return DataBindingUtil.inflate<ItemTaskBinding>(
-            LayoutInflater.from(parent.context),
-            R.layout.item_task,
-            parent,
-            false
-        ).let { TaskViewHolder(it, listener) }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(R.layout.item_user, parent, false)
+        return UserViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        (holder as? TaskViewHolder)?.bind(getItem(position))
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+        val person = getItem(position)
+        holder.apply {
+            firstName.text = person.firstName
+            lastName.text = person.lastName
+            age.text = person.age.toString()
+        }
     }
+
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<User>() {
             override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
@@ -39,26 +43,11 @@ class UserAdapter() : ListAdapter<User, UserViewHolder>(diffUtil) {
     }
 }
 
-class UserViewHolder(
-    private val binding: ItemTaskBinding,
-    listener: TaskAdapter.OnTaskItemClickListener?
-) : RecyclerView.ViewHolder(binding.root) {
+class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    init {
-        itemView.setOnClickListener { listener?.onTaskItemClick(bindingAdapterPosition) }
+    val firstName: TextView = view.findViewById(R.id.tv_first_name)
+    val lastName: TextView = view.findViewById(R.id.tv_last_name)
+    val age: TextView = view.findViewById(R.id.tv_age)
 
-        itemView.setOnLongClickListener {
-            listener?.onTaskItemLongClick(bindingAdapterPosition)
-            return@setOnLongClickListener true
-        }
 
-        binding.checkbox.setOnClickListener {
-            listener?.onTaskCompleteClick(bindingAdapterPosition)
-        }
-    }
-
-    fun bind(task: Task) {
-        binding.task = task
-        binding.executePendingBindings()
-    }
 }
