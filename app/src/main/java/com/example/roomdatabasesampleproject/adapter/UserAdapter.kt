@@ -12,21 +12,15 @@ import com.example.roomdatabasesampleproject.model.User
 
 class UserAdapter : ListAdapter<User, UserViewHolder>(diffUtil) {
 
-    fun setTaskItems(list: List<User>) = submitList(list)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_user, parent, false)
-        return UserViewHolder(view)
+        return UserViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val person = getItem(position)
-        holder.apply {
-            firstName.text = person.firstName
-            lastName.text = person.lastName
-            age.text = person.age.toString()
-        }
+        holder.bind(person)
     }
 
     companion object {
@@ -45,9 +39,13 @@ class UserAdapter : ListAdapter<User, UserViewHolder>(diffUtil) {
 
 class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    val firstName: TextView = view.findViewById(R.id.tv_first_name)
-    val lastName: TextView = view.findViewById(R.id.tv_last_name)
-    val age: TextView = view.findViewById(R.id.tv_age)
+    private val firstName: TextView = view.findViewById(R.id.tv_first_name)
+    private val lastName: TextView = view.findViewById(R.id.tv_last_name)
+    private val age: TextView = view.findViewById(R.id.tv_age)
 
-
+    fun bind(user: User) {
+        firstName.text = user.firstName
+        lastName.text = user.lastName
+        age.text = user.age.toString()
+    }
 }
